@@ -1,0 +1,13 @@
+ytd-sentiment-bar-renderer, ytd-comments {
+    display: inherit !important;
+}
+
+#top-level-buttons > ytd-toggle-button-renderer:first-child >
+ a > yt-formatted-string{
+    display: inherit;
+}
+
+#top-level-buttons > ytd-toggle-button-renderer:nth-child(2) >
+ a > yt-formatted-string{
+    display: inherit;
+}

@@ -1,5 +1,7 @@
+var active = true;
+
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (changeInfo.status !== 'complete')
+    if (!active || changeInfo.status !== 'complete')
         return;
 
     var regex = new RegExp('https:\/\/www\.youtube\.com\/watch?.*');
@@ -8,6 +10,18 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
         return;
 
     chrome.tabs.insertCSS(tabId, {
-        "file": "hide-elements.css"
+        "file": "css/hide-elements.css"
     })
 })
+
+chrome.browserAction.onClicked.addListener(function(tab) {
+    active = !active;
+
+    chrome.tabs.insertCSS(tab.id, {
+        "file": `css/${active ? 'hide-elements' : 'show-elements'}.css`
+    })
+
+    chrome.browserAction.setIcon({
+        path: `images/${active ? 'iconActive' : 'iconInactive'}.png`
+    });
+});
