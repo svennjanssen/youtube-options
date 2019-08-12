@@ -11,3 +11,7 @@ ytd-sentiment-bar-renderer, ytd-comments {
  a > yt-formatted-string{
     display: inherit;
 }
+
+ytd-live-chat-frame {
+    display: inherit !important;
+}

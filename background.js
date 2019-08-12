@@ -4,9 +4,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (!active || changeInfo.status !== 'complete')
         return;
 
-    var regex = new RegExp('https:\/\/www\.youtube\.com\/watch?.*');
-
-    if (!regex.test(tab.url))
+    if (!isYoutubeVideoPage(tab.url))
         return;
 
     chrome.tabs.insertCSS(tabId, {
@@ -17,11 +15,18 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 chrome.browserAction.onClicked.addListener(function(tab) {
     active = !active;
 
-    chrome.tabs.insertCSS(tab.id, {
-        "file": `css/${active ? 'hide-elements' : 'show-elements'}.css`
-    })
-
     chrome.browserAction.setIcon({
         path: `images/${active ? 'iconActive' : 'iconInactive'}.png`
     });
+        
+    if (isYoutubeVideoPage(tab.url))
+        chrome.tabs.insertCSS(tab.id, {
+            "file": `css/${active ? 'hide-elements' : 'show-elements'}.css`
+        });
 });
+
+function isYoutubeVideoPage(url) {
+    const regex = new RegExp('https:\/\/www\.youtube\.com\/watch?.*');
+
+    return regex.test(url);
+}

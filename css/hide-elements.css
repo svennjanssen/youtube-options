@@ -11,3 +11,7 @@ ytd-sentiment-bar-renderer, ytd-comments {
  a > yt-formatted-string{
     display: none;
 }
+
+ytd-live-chat-frame {
+    display: none !important;
+}
