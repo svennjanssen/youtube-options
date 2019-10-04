@@ -12,6 +12,7 @@
     "permissions": [
         "webNavigation",
         "https://www.youtube.com/*",
+        "https://www.animefreak.tv/*",
         "tabs"
     ],
     "manifest_version": 2

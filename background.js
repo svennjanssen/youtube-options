@@ -1,16 +1,34 @@
-var active = true;
+let active = true;
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (!active || changeInfo.status !== 'complete')
-        return;
+const supportedDomains =  [
+    {
+        domainRegex: new RegExp('https:\/\/www\.youtube\.com\/watch?.*'),
+        hideCssPath: "css/hide-elements-youtube.css",
+        showCssPath: "css/show-elements-animefreak.css"
+    },
+    {
+        domainRegex: new RegExp('https:\/\/www\.animefreak\.tv\/watch\/.*'),
+        hideCssPath: "css/hide-elements-animefreak.css",
+        showCssPath: "css/show-elements-animefreak.css"
+    }
+];
 
-    if (!isYoutubeVideoPage(tab.url))
-        return;
+chrome.tabs.onReplaced.addListener(function()  {
+ console.log("onReplaced ");
 
-    chrome.tabs.insertCSS(tabId, {
-        "file": "css/hide-elements.css"
-    })
 })
+
+chrome.tabs.onUpdated.addListener(function(tabId, _, tab) {
+    if (!active)
+        return;
+
+    const cssPath = getCssPath(tab.url, true);
+
+    if (cssPath)
+        chrome.tabs.insertCSS(tabId, {
+            "file": cssPath
+        });
+});
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     active = !active;
@@ -19,14 +37,20 @@ chrome.browserAction.onClicked.addListener(function(tab) {
         path: `images/${active ? 'iconActive' : 'iconInactive'}.png`
     });
         
-    if (isYoutubeVideoPage(tab.url))
+    const cssPath = getCssPath(tab.url, active);
+
+    if (cssPath)
         chrome.tabs.insertCSS(tab.id, {
-            "file": `css/${active ? 'hide-elements' : 'show-elements'}.css`
+            "file": cssPath
         });
 });
 
-function isYoutubeVideoPage(url) {
-    const regex = new RegExp('https:\/\/www\.youtube\.com\/watch?.*');
+function getCssPath(url, hide) {
+    for (var i = 0; i < supportedDomains.length; i++)
+        if (supportedDomains[i].domainRegex.test(url))
+            return hide 
+            ? supportedDomains[i].hideCssPath
+            : supportedDomains[i].showCssPath;
 
-    return regex.test(url);
-}
+    return null;
+};
